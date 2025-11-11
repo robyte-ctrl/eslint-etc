@@ -7,14 +7,14 @@ import {
   ESLintUtils,
   TSESLint,
   TSESTree as es,
-} from "@typescript-eslint/experimental-utils";
-import * as tsutils from "tsutils-etc";
+} from "@typescript-eslint/utils";
+import * as tsutils from "./tsutils-etc";
 import * as ts from "typescript";
 import { isArrowFunctionExpression, isFunctionDeclaration } from "./is";
 
 export function getTypeServices<
   TMessageIds extends string,
-  TOptions extends unknown[]
+  TOptions extends unknown[],
 >(context: TSESLint.RuleContext<TMessageIds, Readonly<TOptions>>) {
   const services = ESLintUtils.getParserServices(context);
   const { esTreeNodeToTSNodeMap, program } = services;
@@ -23,20 +23,20 @@ export function getTypeServices<
   const couldBeType = (
     node: es.Node,
     name: string | RegExp,
-    qualified?: { name: RegExp }
+    qualified?: { name: RegExp },
   ) => {
     const type = getType(node);
     return tsutils.couldBeType(
       type,
       name,
-      qualified ? { ...qualified, typeChecker } : undefined
+      qualified ? { ...qualified, typeChecker } : undefined,
     );
   };
 
   const couldReturnType = (
     node: es.Node,
     name: string | RegExp,
-    qualified?: { name: RegExp }
+    qualified?: { name: RegExp },
   ) => {
     let tsTypeNode: ts.Node | undefined;
     const tsNode = esTreeNodeToTSNodeMap.get(node);
@@ -55,11 +55,11 @@ export function getTypeServices<
     }
     return Boolean(
       tsTypeNode &&
-        tsutils.couldBeType(
-          typeChecker.getTypeAtLocation(tsTypeNode),
-          name,
-          qualified ? { ...qualified, typeChecker } : undefined
-        )
+      tsutils.couldBeType(
+        typeChecker.getTypeAtLocation(tsTypeNode),
+        name,
+        qualified ? { ...qualified, typeChecker } : undefined,
+      ),
     );
   };
 

@@ -12,3 +12,4 @@ export * from "./get-parser-services";
 export * from "./get-type-services";
 export * from "./is";
 export * from "./is-import";
+export * as tsUtilsEtc from "./tsutils-etc";
